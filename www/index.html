@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Modern 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --calc-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --btn-num: rgba(255, 255, 255, 0.05);
+            --btn-num-hover: rgba(255, 255, 255, 0.12);
+            --btn-op: rgba(99, 102, 241, 0.2);
+            --btn-op-hover: rgba(99, 102, 241, 0.4);
+            --btn-equal: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --btn-equal-hover: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+            --btn-clear: rgba(239, 68, 68, 0.2);
+            --btn-clear-hover: rgba(239, 68, 68, 0.4);
+            --border-glow: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            padding: 20px;
+            color: var(--text-main);
+        }
+
+        /* Container Utama Kalkulator */
+        .calculator {
+            width: 100%;
+            max-width: 420px;
+            background: var(--calc-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 32px;
+            padding: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header: Real-time Date & Time */
+        .header-widget {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .brand-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-date-container {
+            text-align: right;
+        }
+
+        #real-time {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        #real-date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Layar Display */
+        .display-screen {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 28px;
+            text-align: right;
+            word-wrap: break-word;
+            word-break: break-all;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .history-expr {
+            font-size: 1rem;
+            color: var(--text-muted);
+            min-height: 24px;
+            margin-bottom: 6px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .current-input {
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* Sembunyikan scrollbar di display */
+        .current-input::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Grid Tombol */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        button {
+            border: none;
+            outline: none;
+            height: 68px;
+            border-radius: 18px;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Gaya Tombol Berdasarkan Tipe */
+        .btn-number {
+            background: var(--btn-num);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .btn-number:hover {
+            background: var(--btn-num-hover);
+        }
+
+        .btn-operator {
+            background: var(--btn-op);
+            color: #818cf8;
+            font-weight: 600;
+        }
+
+        .btn-operator:hover {
+            background: var(--btn-op-hover);
+        }
+
+        .btn-clear {
+            background: var(--btn-clear);
+            color: #f87171;
+            font-weight: 600;
+        }
+
+        .btn-clear:hover {
+            background: var(--btn-clear-hover);
+        }
+
+        .btn-equal {
+            background: var(--btn-equal);
+            color: #ffffff;
+            grid-column: span 2;
+            font-weight: 600;
+            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-equal:hover {
+            background: var(--btn-equal-hover);
+            box-shadow: 0 8px 24px -4px rgba(99, 102, 241, 0.7);
+        }
+        
+        button i {
+            pointer-events: none; /* Mencegah bug klik pada ikon batin */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <div class="header-widget">
+            <div class="brand-title">Kalkulator <i class="fa-solid legisl"></i></div>
+            <div class="time-date-container">
+                <div id="real-time">00:00:00</div>
+                <div id="real-date">Kamis, 1 Januari 2026</div>
+            </div>
+        </div>
+
+        <div class="display-screen">
+            <div class="history-expr" id="history"></div>
+            <div class="current-input" id="display">0</div>
+        </div>
+
+        <div class="buttons-grid">
+            <button class="btn-clear" onclick="clearAll()">AC</button>
+            <button class="btn-operator" onclick="appendOperator('%')">%</button>
+            <button class="btn-operator" onclick="backspace()"><i class="fa-solid fa-backspace"></i></button>
+            <button class="btn-operator" onclick="appendOperator('/')">÷</button>
+
+            <button class="btn-number" onclick="appendNumber('7')">7</button>
+            <button class="btn-number" onclick="appendNumber('8')">8</button>
+            <button class="btn-number" onclick="appendNumber('9')">9</button>
+            <button class="btn-operator" onclick="appendOperator('*')">×</button>
+
+            <button class="btn-number" onclick="appendNumber('4')">4</button>
+            <button class="btn-number" onclick="appendNumber('5')">5</button>
+            <button class="btn-number" onclick="appendNumber('6')">6</button>
+            <button class="btn-operator" onclick="appendOperator('-')">−</button>
+
+            <button class="btn-number" onclick="appendNumber('1')">1</button>
+            <button class="btn-number" onclick="appendNumber('2')">2</button>
+            <button class="btn-number" onclick="appendNumber('3')">3</button>
+            <button class="btn-operator" onclick="appendOperator('+')">+</button>
+
+            <button class="btn-number" onclick="appendNumber('0')">0</button>
+            <button class="btn-number" onclick="appendDecimal('.')">.</button>
+            <button class="btn-equal" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIKA WAKTU DAN TANGGAL REAL-TIME ---
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format Waktu (HH:MM:SS)
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('real-time').textContent = `${hours}:${minutes}:${seconds}`;
+
+            // Format Tanggal (Hari, Tanggal Bulan Tahun)
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('real-date').textContent = now.toLocaleDateString('id-ID', options);
+        }
+        // Jalankan setiap detik
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Jalankan langsung di awal
+
+
+        // --- LOGIKA UTAMA KALKULATOR ---
+        const display = document.getElementById('display');
+        const historyDisplay = document.getElementById('history');
+        
+        let currentInput = '0';
+        let previousInput = '';
+        let shouldResetDisplay = false;
+
+        function updateScreen() {
+            display.textContent = currentInput;
+        }
+
+        function appendNumber(number) {
+            if (currentInput === '0' || shouldResetDisplay) {
+                currentInput = number;
+                shouldResetDisplay = false;
+            } else {
+                // Batasi digit agar tidak meluap keluar layar (maksimal 14 digit)
+                if (currentInput.length < 14) {
+                    currentInput += number;
+                }
+            }
+            updateScreen();
+        }
+
+        function appendDecimal(dot) {
+            if (shouldResetDisplay) {
+                currentInput = '0';
+                shouldResetDisplay = false;
+            }
+            // Mencegah titik desimal ganda dalam satu bilangan
+            const parts = currentInput.split(/[\+\-\*\/%]/);
+            const currentPart = parts[parts.length - 1];
+            
+            if (!currentPart.includes(dot)) {
+                currentInput += dot;
+            }
+            updateScreen();
+        }
+
+        function appendOperator(op) {
+            if (shouldResetDisplay) shouldResetDisplay = false;
+            
+            const lastChar = currentInput.slice(-1);
+            
+            // Jika karakter terakhir adalah operator, ganti dengan operator baru
+            if (['+', '-', '*', '/', '%'].includes(lastChar)) {
+                currentInput = currentInput.slice(0, -1) + op;
+            } else {
+                currentInput += op;
+            }
+            updateScreen();
+        }
+
+        function clearAll() {
+            currentInput = '0';
+            previousInput = '';
+            historyDisplay.textContent = '';
+            shouldResetDisplay = false;
+            updateScreen();
+        }
+
+        function backspace() {
+            if (shouldResetDisplay) {
+                clearAll();
+                return;
+            }
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateScreen();
+        }
+
+        function calculate() {
+            let expression = currentInput;
+            
+            // Proteksi jika input kosong atau hanya operator di akhir
+            const lastChar = expression.slice(-1);
+            if (['+', '-', '*', '/', '%'].includes(lastChar)) {
+                expression = expression.slice(0, -1);
+            }
+
+            try {
+                // Tampilkan ekspresi matematika asli ke riwayat atas sebelum dihitung
+                historyDisplay.textContent = expression.replace(/\*/g, '×').replace(/\//g, '÷') + ' =';
+                
+                // Mengamankan evaluasi string matematika menggunakan Function evaluator
+                // Mengubah persen (%) menjadi desimal (/100) yang tepat
+                let sanitizedExpr = expression.replace(/%/g, '/100');
+                
+                let result = new Function(`return ${sanitizedExpr}`)();
+
+                // Menangani hasil pembagian dengan nol atau error matematis bawaan JavaScript
+                if (!isFinite(result)) {
+                    currentInput = 'Error';
+                } else {
+                    // Pembulatan angka desimal panjang agar rapi (maks 4 angka di belakang koma)
+                    currentInput = String(Number(result.toFixed(4)));
+                }
+                
+                shouldResetDisplay = true;
+            } catch (error) {
+                currentInput = 'Error';
+                shouldResetDisplay = true;
+            }
+            updateScreen();
+        }
+
+        // Dukungan Input Keyboard Fisik
+        window.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
+            if (e.key === '.') appendDecimal('.');
+            if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/' || e.key === '%') appendOperator(e.key);
+            if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); calculate(); }
+            if (e.key === 'Backspace') backspace();
+            if (e.key === 'Escape') clearAll();
+        });
+    </script>
+<script src="cordova.js"></script>
+</body>
+</html>
