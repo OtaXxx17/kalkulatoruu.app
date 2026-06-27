@@ -1,0 +1,10 @@
+{
+  "name": "kalkulator",
+  "version": "1.0.0",
+  "displayName": "Kalkulator",
+  "cordova": {
+    "platforms": [
+      "android"
+    ]
+  }
+}
